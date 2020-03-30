@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
 String _data = "";
 //String _url = "https://viacep.com.br/ws/01311300/json";
 String _url = "https://parseapi.back4app.com/functions/colors";
-
+var _total = 0;
 
 void _recuperarCor() async {
 
@@ -36,7 +36,7 @@ void _recuperarCor() async {
       headers: {
         'X-Parse-Application-Id': 'XUGUteSRjfXSLvA4AKNAbFwjdF0CfYuInJesxmlF',
         'X-Parse-REST-API-Key': 'X-Parse-REST-API-Key',
-        'Content-Type': ' application/json '
+        'Content-Type': 'application/json'
       }
   );
   Map<String, dynamic> _retorno = json.decode(response.body);
@@ -45,44 +45,48 @@ void _recuperarCor() async {
 
   _status = response.statusCode.toString() + response.body;
 
-  setState(() {
-    _data = _status;
-  });
-
+  if(response.statusCode.toString() != "200"){
+    setState(() {
+      _data = _status;
+    });
+  }else {
+    setState(() {
+      _data = "Sucesso!";
+    });
+  }
 
 }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green,
         title: Text("Cores"),
       ),
       body: Container(
-        padding: EdgeInsets.all(30),
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.all(5),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(_data),
-                MaterialButton(
-                  child: Text("dsdsdsdd"),
-                ),
               ],
             ),
             Column(
               children: <Widget>[
-                RaisedButton(
-                  child: Text("clique aqui"),
-                  onPressed: _recuperarCor,
-                )
+                GestureDetector(
+                  child: Image.asset("images/reload.jpg",height: 90),
+                  onTap: _recuperarCor,
+                ),
               ],
-            )
-
-
+            ),
           ],
         ),
-      ),
 
-    );
+        ),
+      );
   }
 }
