@@ -21,8 +21,8 @@ class _HomeState extends State<Home> {
   String _url = "https://parseapi.back4app.com/functions/colors";
   var _total = 0;
 
-  List<String> litens = ["1","2","3","4"];
-  List<int> colorCodes = [600, 500, 100,500];
+  List<String> litens = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"];
+  List<int> colorCodes = [600, 500, 100,500, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100];
 
 // Método de recuperação de cores vindas da Api
   void _recuperarCor() async {
