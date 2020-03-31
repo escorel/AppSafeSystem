@@ -123,8 +123,18 @@ class _HomeState extends State<Home> {
                         itemBuilder: (BuildContext context, int index) {
 
                           return Container(
-                            height: 50,
-                            color: hexToColor(_colorCodes[index]),
+                            margin: EdgeInsets.only(top:10.0),
+                            decoration: BoxDecoration(
+                                color: hexToColor(_colorCodes[index]),
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(10.0),
+                                    topLeft: Radius.circular(10.0),
+                                    bottomRight: Radius.circular(10.0),
+                                    bottomLeft: Radius.circular(10.0)
+                                )
+                            ),
+                            height: 80,
                             child: Center(child: Text(''),
 
                             ),
