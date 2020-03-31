@@ -1,34 +1,30 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'dart:math';
+
 
 class Home extends StatefulWidget {
   @override
   _HomeState createState() => _HomeState();
 }
 
-
 class _HomeState extends State<Home> {
 
   // Dados da conexão ao Api remoto
   String _data = "";
-  int _total = 0;
   int _cor = 0;
   String _msg = " cor";
 
   //Array de cores
   List<String> _colorCodes = [ ];
 
-  //Método de recuperação de código numérico para cor exadecimal
+  //Fun de recuperação de código numérico para cor exadecimal
   Color hexToColor(String code) {
     return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
 
-  // Método de recuperação de cores vindas da Api
+  // Função de recuperação de cores vindas da Api
   void _recuperarCor() async {
     String _status = "";
     http.Response response;
@@ -91,7 +87,7 @@ class _HomeState extends State<Home> {
               Container(
                 width: double.infinity,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Column(
                       children: <Widget>[
