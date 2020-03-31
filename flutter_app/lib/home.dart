@@ -62,7 +62,8 @@ class _HomeState extends State<Home> {
 
     if(response.statusCode.toString() != "200"){
       setState(() {
-        _data = _status+"  "+_cor.toString()+" Cor(es) única(s)";
+        if(_cor <=1){}
+        _data = _status+"  "+_cor.toString()+ _msg;
       });
     }else {
 
@@ -130,8 +131,7 @@ class _HomeState extends State<Home> {
                           return Container(
                             height: 50,
                             color: hexToColor(_colorCodes[index]),
-                            child: Center(
-                              child: Text('Container ${_colorCodes[index]}'),
+                            child: Center(child: Text(''),
 
                             ),
                           );
