@@ -16,11 +16,12 @@ class _HomeState extends State<Home> {
 
   // Dados da conexão ao Api remoto
   String _data = "";
-  var _total = 0;
+  int _total = 0;
   int _cor = 0;
+  String _msg = " cor";
 
-  //Array de cores e indices para teste de cores
-  List<String> _colorCodes = [ "#D4B2EB", "#D2E163", "#D4B2EB" ];
+  //Array de cores
+  List<String> _colorCodes = [ ];
 
   //Método de recuperação de código numérico para cor exadecimal
   Color hexToColor(String code) {
@@ -43,30 +44,23 @@ class _HomeState extends State<Home> {
     String _result = _retorno["result"];
     _status = response.statusCode.toString() + response.body;
 
-    _colorCodes.sort();
-    var userId = "${_colorCodes[0]}" + "${_colorCodes[1]}";
-    print(userId);
-
-    for(int i=0;i < _colorCodes.length ; i++){
-      for(int a=0;a < _colorCodes.length ; a++){
-        if(_colorCodes[i] == _colorCodes[a]){
-          _cor ++;
-        }else{
-          _cor --;
-        }
-      };
-    };
-
-    print(_cor);
-    print(_colorCodes.length);
-
+    //Verifica se houve erro e processa a entrada de informações
     if(response.statusCode.toString() != "200"){
       setState(() {
         if(_cor <=1){}
         _data = _status+"  "+_cor.toString()+ _msg;
       });
     }else {
-
+      _colorCodes.sort();
+      for(int i=0;i < _colorCodes.length ; i++){
+        for(int a=0;a < _colorCodes.length ; a++){
+          if(_colorCodes[i] == _colorCodes[a]){
+            _cor ++;
+          }else{
+            _cor --;
+          }
+        };
+      }
       setState(() {
         _colorCodes = _retorno["result"];
         _data = _cor.toString()+" Cor(es) única(s)";
