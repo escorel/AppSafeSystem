@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:collection';
-//import 'package:queries/collections.dart';
-
+import 'classes.dart';
+import 'globais.dart' as globals;
 
 class Home extends StatefulWidget {
   @override
@@ -13,25 +13,10 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  // Declaração de variáveis da classe
-  String _data = "";
-  int _cor = 0;
-  String _msg = " cor";
-  int _totalCor = 0;
-
-  //Array de cores
-  var _colorCodes = [];
-  var _colorCodesUnic = [];
-
-
-  //Fun de recuperação de código numérico para cor exadecimal
-  Color hexToColor(String code) {
-    return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
-  }
+  Helpers helpers = Helpers();
 
   // Função de recuperação de cores vindas da Api no formato Json
   void _recuperarCor() async {
-    String _status = "";
     http.Response response;
     response = await http.post(
         "https://parseapi.back4app.com/functions/colors",
@@ -45,26 +30,25 @@ class _HomeState extends State<Home> {
     // Recuperando Json para Lista
     var parsedJson = json.decode(response.body);
     var result = parsedJson['result'];
-    _colorCodes = result;
+    globals.colorCodes = result;
 
     //Verifica se houve erro e processa a entrada de informações
     if(response.statusCode != 200){
       setState(() {
-          _data =  response.statusCode.toString() + response.body;
+          globals.data =  response.statusCode.toString() + response.body;
       });
     }else {
-      _cor = 0;
 
-      _colorCodesUnic = LinkedHashSet<String>.from(_colorCodes).toList();
+      //Recebe o valor do array inicial sem os valores duplicados
+      globals.colorCodesUnic = LinkedHashSet<String>.from(globals.colorCodes).toList();
 
-      _cor = _colorCodesUnic.length;
-
+      //Verifica a quantidade de cores únicas e exibe mensagem apropriada
       setState(() {
         //_colorCodes = _retorno["result"];
-        if (_cor <=1){
-          _data = _cor.toString()+" Cor única";
+        if (globals.colorCodesUnic.length <=1){
+          globals.data = globals.colorCodesUnic.length.toString()+" Cor única";
         }else{
-          _data = _cor.toString()+" Cores únicas";
+          globals.data = globals.colorCodesUnic.length.toString()+" Cores únicas";
         }
       });
     }
@@ -78,9 +62,7 @@ class _HomeState extends State<Home> {
       _recuperarCor();
     });
   }
-
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
           title: Text("Cores"),
@@ -89,26 +71,30 @@ class _HomeState extends State<Home> {
         body: Container(
           child: Column(
             children: <Widget>[
-
               Container(
                 width: double.infinity,
+                padding: EdgeInsets.only(left:20),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Column(
                       children: <Widget>[
-                        Text(_data,),
+                        Text(globals.data,),
                       ],
                     ),
                     Column(
                       children: <Widget>[
                         GestureDetector(
-                          child: FloatingActionButton(
+                          child: SizedBox(
+                            width: 70,
+                            height: 70,
+                            child: FloatingActionButton(
                             onPressed: _recuperarCor,
                             elevation: 0.0,
                             backgroundColor: Colors.white,
                             foregroundColor: Colors.green,
                             child: Icon(Icons.refresh),
+                          )
                           ) ,
 
                         )
@@ -121,13 +107,13 @@ class _HomeState extends State<Home> {
                   child: new Expanded(
                     child: ListView.builder(
                         padding: const EdgeInsets.all(8),
-                        itemCount: _colorCodes.length,
+                        itemCount: globals.colorCodes.length,
                         itemBuilder: (BuildContext context, int index) {
 
                           return Container(
                             margin: EdgeInsets.only(top:10.0),
                             decoration: BoxDecoration(
-                                color: hexToColor(_colorCodes[index]),
+                                color: helpers.hexToColor(globals.colorCodes[index]),
                                 shape: BoxShape.rectangle,
                                 borderRadius: BorderRadius.only(
                                     topRight: Radius.circular(10.0),
@@ -137,8 +123,7 @@ class _HomeState extends State<Home> {
                                 )
                             ),
                             height: 80,
-                            child: Center(child: Text(''),
-
+                            child: Center(child: Text(""),//helpers.hexToColor(globals.colorCodes[index]).toString()+" "+globals.colorCodes[index]),
                             ),
                           );
                         }
