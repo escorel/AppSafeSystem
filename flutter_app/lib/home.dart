@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:collection';
+//import 'package:queries/collections.dart';
 
 
 class Home extends StatefulWidget {
@@ -11,20 +13,23 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  // Dados da conexão ao Api remoto
+  // Declaração de variáveis da classe
   String _data = "";
   int _cor = 0;
   String _msg = " cor";
+  int _totalCor = 0;
 
   //Array de cores
-  List<String> _colorCodes = [ ];
+  var _colorCodes = [];
+  var _colorCodesUnic = [];
+
 
   //Fun de recuperação de código numérico para cor exadecimal
   Color hexToColor(String code) {
     return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
   }
 
-  // Função de recuperação de cores vindas da Api
+  // Função de recuperação de cores vindas da Api no formato Json
   void _recuperarCor() async {
     String _status = "";
     http.Response response;
@@ -32,34 +37,35 @@ class _HomeState extends State<Home> {
         "https://parseapi.back4app.com/functions/colors",
         headers: {
           'X-Parse-Application-Id': 'XUGUteSRjfXSLvA4AKNAbFwjdF0CfYuInJesxmlF',
-          'X-Parse-REST-API-Key': 'X-Parse-REST-API-Key',
+          'X-Parse-REST-API-Key': 'KUXVh7zrFLhs1uS849XUog6CizcNviEP9rdMWfg1',
           'Content-Type': 'application/json'
         }
     );
-    Map<String, dynamic> _retorno = json.decode(response.body);
-    String _result = _retorno["result"];
-    _status = response.statusCode.toString() + response.body;
+
+    // Recuperando Json para Lista
+    var parsedJson = json.decode(response.body);
+    var result = parsedJson['result'];
+    _colorCodes = result;
 
     //Verifica se houve erro e processa a entrada de informações
-    if(response.statusCode.toString() != "200"){
+    if(response.statusCode != 200){
       setState(() {
-        if(_cor <=1){}
-        _data = _status+"  "+_cor.toString()+ _msg;
+          _data =  response.statusCode.toString() + response.body;
       });
     }else {
-      _colorCodes.sort();
-      for(int i=0;i < _colorCodes.length ; i++){
-        for(int a=0;a < _colorCodes.length ; a++){
-          if(_colorCodes[i] == _colorCodes[a]){
-            _cor ++;
-          }else{
-            _cor --;
-          }
-        };
-      }
+      _cor = 0;
+
+      _colorCodesUnic = LinkedHashSet<String>.from(_colorCodes).toList();
+
+      _cor = _colorCodesUnic.length;
+
       setState(() {
-        _colorCodes = _retorno["result"];
-        _data = _cor.toString()+" Cor(es) única(s)";
+        //_colorCodes = _retorno["result"];
+        if (_cor <=1){
+          _data = _cor.toString()+" Cor única";
+        }else{
+          _data = _cor.toString()+" Cores únicas";
+        }
       });
     }
   }
